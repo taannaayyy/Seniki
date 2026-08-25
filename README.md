@@ -1,0 +1,2 @@
+# Seniki
+Seniki project
