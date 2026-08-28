@@ -1,0 +1,31 @@
+.place {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.place-coords {
+  font-variant-numeric: tabular-nums;
+}
+
+.place-button {
+  border: 0;
+  background: transparent;
+  padding: 0;
+  font: inherit;
+  color: var(--accent);
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.place-button:disabled {
+  color: var(--text-muted);
+  cursor: default;
+  text-decoration: none;
+}

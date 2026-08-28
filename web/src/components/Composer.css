@@ -1,0 +1,98 @@
+.composer {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  box-shadow: var(--shadow);
+  padding: 12px 12px 10px;
+  transition: border-color 0.15s ease;
+}
+
+.composer:focus-within {
+  border-color: var(--border-strong);
+}
+
+.composer-input {
+  display: block;
+  width: 100%;
+  border: 0;
+  outline: none;
+  resize: none;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  line-height: 1.55;
+  padding: 6px 8px;
+  max-height: 320px;
+  overflow-y: auto;
+}
+
+.composer-input::placeholder {
+  color: var(--text-muted);
+}
+
+.composer-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.composer-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.composer-icon,
+.composer-send {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  border: 0;
+  background: transparent;
+  color: var(--text-muted);
+  font: inherit;
+  cursor: pointer;
+  border-radius: 999px;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease,
+    opacity 0.15s ease;
+}
+
+.composer-icon {
+  width: 32px;
+  height: 32px;
+  justify-content: center;
+  border: 1px solid var(--border);
+}
+
+.composer-icon:hover {
+  background: var(--surface-hover);
+  color: var(--text);
+}
+
+.composer-icon svg,
+.composer-send svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+}
+
+.composer-send {
+  width: 32px;
+  height: 32px;
+  justify-content: center;
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+.composer-send:hover:not(:disabled) {
+  background: var(--accent-hover);
+}
+
+.composer-send:disabled {
+  opacity: 0.35;
+  cursor: default;
+}

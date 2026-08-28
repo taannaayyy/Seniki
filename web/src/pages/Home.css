@@ -1,0 +1,7 @@
+/* `margin: auto` centres the column in whatever space the top bar leaves. */
+.home {
+  width: 100%;
+  max-width: 740px;
+  margin: auto;
+  padding: 24px 24px 48px;
+}

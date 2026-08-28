@@ -1,0 +1,20 @@
+.placeholder {
+  width: 100%;
+  max-width: 740px;
+  margin: auto;
+  padding: 24px 24px 48px;
+}
+
+.placeholder-title {
+  margin: 0 0 6px;
+  font-size: 26px;
+  font-weight: 500;
+  letter-spacing: -0.3px;
+  color: var(--text);
+}
+
+.placeholder-note {
+  margin: 0;
+  font-size: 14px;
+  color: var(--text-muted);
+}

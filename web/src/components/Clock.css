@@ -1,0 +1,43 @@
+.clock {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 1px;
+  line-height: 1.25;
+  /* Chrome-like UI text, not document content: no selection, no I-beam.
+     Safari still needs the -webkit- prefix. */
+  -webkit-user-select: none;
+  user-select: none;
+  cursor: default;
+}
+
+.clock-time {
+  font-size: 20px;
+  font-weight: 400;
+  letter-spacing: -0.2px;
+  color: var(--text);
+  /* Keeps the digits from shifting the layout as they change */
+  font-variant-numeric: tabular-nums;
+}
+
+.clock-date {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.clock-week {
+  font-size: 11px;
+  color: var(--text-muted);
+  opacity: 0.75;
+  font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 640px) {
+  .clock-time {
+    font-size: 17px;
+  }
+  .clock-date,
+  .clock-week {
+    font-size: 11px;
+  }
+}
