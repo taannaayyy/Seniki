@@ -90,6 +90,13 @@ export function formatDate(date: Date, locale: string): string {
   }).format(date)
 }
 
+export function formatMonthYear(date: Date, locale: string): string {
+  return formatter(locale, 'monthYear', {
+    month: 'long',
+    year: 'numeric',
+  }).format(date)
+}
+
 /**
  * ISO 8601 week number (1-53). Weeks start Monday, and week 1 is the one
  * containing the first Thursday of the year — so early January can fall in

@@ -1,0 +1,229 @@
+.calendar-page {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 0 28px 24px;
+}
+
+/* ---- View tabs ---- */
+.calendar-tabs {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  border-bottom: 1px solid var(--border);
+  overflow-x: auto;
+}
+
+.calendar-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 10px 12px;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  background: transparent;
+  color: var(--text-muted);
+  font: inherit;
+  font-size: 13.5px;
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: default;
+}
+
+.calendar-tab-icon {
+  width: 16px;
+  height: 16px;
+  flex: none;
+  color: inherit;
+}
+
+.calendar-tab-active {
+  color: var(--text);
+  border-bottom-color: var(--accent);
+}
+
+.calendar-tab:disabled {
+  opacity: 0.5;
+}
+
+/* ---- Toolbar ---- */
+.calendar-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 0;
+}
+
+.add-task-wrap {
+  position: relative;
+}
+
+.add-task-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  font-size: 13.5px;
+  font-weight: 500;
+  padding: 7px 12px;
+  cursor: pointer;
+}
+
+.add-task-btn:hover {
+  background: var(--surface-hover);
+}
+
+.add-task-btn svg {
+  width: 15px;
+  height: 15px;
+}
+
+.calendar-nav {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.calendar-today-btn {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  font-size: 13.5px;
+  font-weight: 500;
+  padding: 7px 12px;
+  cursor: pointer;
+  margin-right: 8px;
+}
+
+.calendar-today-btn:hover {
+  background: var(--surface-hover);
+}
+
+.calendar-nav-arrow {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.calendar-nav-arrow:hover {
+  background: var(--surface-hover);
+  color: var(--text);
+}
+
+.calendar-nav-arrow svg {
+  width: 17px;
+  height: 17px;
+}
+
+.calendar-month-label {
+  min-width: 130px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+/* ---- Grid ---- */
+/* Scrolls horizontally on narrow viewports instead of being clipped by
+   .main's overflow: hidden, since the grid has a real minimum width. */
+.calendar-grid-wrap {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow-x: auto;
+}
+
+.calendar-grid-inner {
+  min-width: 700px;
+}
+
+.calendar-weekdays,
+.calendar-week {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+}
+
+.calendar-weekdays {
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.calendar-weekday {
+  padding: 9px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.calendar-week + .calendar-week {
+  border-top: 1px solid var(--border);
+}
+
+.calendar-cell {
+  position: relative;
+  min-height: 118px;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  background: var(--bg-sidebar);
+}
+
+.calendar-cell + .calendar-cell {
+  border-left: 1px solid var(--border);
+}
+
+.calendar-cell-outside {
+  background: var(--bg);
+}
+
+.calendar-cell-outside .calendar-daynum {
+  color: var(--text-muted);
+  opacity: 0.5;
+}
+
+.calendar-daynum {
+  display: inline-grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text);
+  flex: none;
+}
+
+.calendar-cell-today .calendar-daynum {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+.calendar-cell-tasks {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+@media (max-width: 640px) {
+  .calendar-page {
+    padding: 0 14px 16px;
+  }
+
+  .calendar-toolbar {
+    flex-wrap: wrap;
+  }
+}
