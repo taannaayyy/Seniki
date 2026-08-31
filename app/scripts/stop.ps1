@@ -1,6 +1,7 @@
 # Stops the backend + frontend processes started by start.ps1.
 
-$root = $PSScriptRoot
+# This script lives in app\scripts\, so the project root is two levels up.
+$root = Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
 $runDir = Join-Path $root ".run"
 
 foreach ($name in "backend", "frontend") {

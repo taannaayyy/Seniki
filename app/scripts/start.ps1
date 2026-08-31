@@ -1,10 +1,11 @@
 # Starts the Seniki backend + frontend in the background and opens the app
 # in the default browser. Designed to be launched hidden (no console window)
-# from the desktop shortcut created by create-shortcut.ps1.
+# from the desktop shortcut created by setup.py.
 
 $ErrorActionPreference = "Stop"
 
-$root = $PSScriptRoot
+# This script lives in app\scripts\, so the project root is two levels up.
+$root = Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
 $runDir = Join-Path $root ".run"
 $appDir = Join-Path $root "app"
 $webDir = Join-Path $root "web"
