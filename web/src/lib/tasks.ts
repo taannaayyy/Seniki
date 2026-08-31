@@ -1,5 +1,6 @@
 import { taskColorValue } from './taskColors'
-import { toISODate } from './calendar'
+import type { TaskColorId } from './taskColors'
+import { minutesOfDay, toISODate } from './calendar'
 
 export type Assignee = {
   initial: string
@@ -10,10 +11,21 @@ export type Task = {
   id: string
   title: string
   date: string // ISO YYYY-MM-DD
+  time: string // 24-hour HH:MM, local — start
+  endTime: string // 24-hour HH:MM, local — end, same day
   color: string
   comments: number
   attachments: number
   assignees: Assignee[]
+}
+
+/** The editable fields of a task, as the add and edit forms collect them. */
+export type TaskInput = {
+  title: string
+  date: string
+  time: string
+  endTime: string
+  colorId: TaskColorId
 }
 
 /** Placeholder team, standing in until the app has real accounts. */
@@ -39,6 +51,8 @@ export function buildInitialTasks(today: Date): Task[] {
       id: 'seed-1',
       title: 'Branding Aviro Discussion',
       date: onDay(3),
+      time: '09:30',
+      endTime: '10:30',
       color: taskColorValue('purple'),
       comments: 16,
       attachments: 2,
@@ -48,6 +62,8 @@ export function buildInitialTasks(today: Date): Task[] {
       id: 'seed-2',
       title: 'UX Planning for Architecture - Payment Application',
       date: onDay(10),
+      time: '11:00',
+      endTime: '12:30',
       color: taskColorValue('accent'),
       comments: 21,
       attachments: 8,
@@ -57,6 +73,8 @@ export function buildInitialTasks(today: Date): Task[] {
       id: 'seed-3',
       title: 'Kickoff Meeting',
       date: onDay(18),
+      time: '14:00',
+      endTime: '15:00',
       color: taskColorValue('green'),
       comments: 21,
       attachments: 8,
@@ -66,10 +84,19 @@ export function buildInitialTasks(today: Date): Task[] {
       id: 'seed-4',
       title: 'Build Event Registration Page',
       date: onDay(24),
+      time: '16:30',
+      endTime: '18:00',
       color: taskColorValue('blue'),
       comments: 21,
       attachments: 8,
       assignees: [TEAM[1], TEAM[4], TEAM[2]],
     },
   ]
+}
+
+/** Chronological within a day; ties fall back to the title so order is stable. */
+export function sortTasks(tasks: Task[]): Task[] {
+  return [...tasks].sort(
+    (a, b) => minutesOfDay(a.time) - minutesOfDay(b.time) || a.title.localeCompare(b.title),
+  )
 }

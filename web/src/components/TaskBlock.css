@@ -1,0 +1,55 @@
+.task-block {
+  position: absolute;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  padding: 3px 5px 3px 7px;
+  border-radius: 5px;
+  border-left: 2px solid var(--task-color);
+  background: color-mix(in srgb, var(--task-color) 12%, var(--bg));
+  font-size: 11.5px;
+  line-height: 1.35;
+}
+
+.task-block-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 4px;
+  min-width: 0;
+}
+
+.task-block-title {
+  flex: 1;
+  min-width: 0;
+  font-weight: 600;
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.task-block-time {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.task-block-clock {
+  width: 11px;
+  height: 11px;
+  flex: none;
+}
+
+/* Too short for two lines: keep the title, drop the time row. */
+.task-block-compact {
+  padding-top: 1px;
+  padding-bottom: 1px;
+}
+
+.task-block-compact .task-block-time {
+  display: none;
+}

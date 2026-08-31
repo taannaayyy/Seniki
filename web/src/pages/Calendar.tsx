@@ -1,16 +1,37 @@
 import { useMemo, useState } from 'react'
 import { CalendarIcon, TodoIcon } from '../components/NavIcons'
 import AddTaskPopover from '../components/AddTaskPopover'
-import TaskCard from '../components/TaskCard'
+import MonthGrid from '../components/MonthGrid'
+import TimeGrid from '../components/TimeGrid'
+import type { TaskFormValues } from '../components/TaskForm'
 import { useNow } from '../hooks/useNow'
-import { addMonths, getMonthGrid, toISODate } from '../lib/calendar'
-import { formatMonthYear, resolvePlace } from '../lib/locale'
-import { taskColorValue } from '../lib/taskColors'
-import { buildInitialTasks, TEAM } from '../lib/tasks'
+import { useTasks } from '../hooks/useTasks'
+import {
+  addDays,
+  addMonths,
+  getDay,
+  getMonthGrid,
+  getWeekDays,
+  startOfWeek,
+  toISODate,
+} from '../lib/calendar'
+import {
+  formatDayLabel,
+  formatMonthYear,
+  formatWeekRange,
+  resolvePlace,
+} from '../lib/locale'
+import { sortTasks } from '../lib/tasks'
 import type { Task } from '../lib/tasks'
 import './Calendar.css'
 
-const WEEKDAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+type CalendarView = 'day' | 'week' | 'month'
+
+const VIEWS: { id: CalendarView; label: string }[] = [
+  { id: 'day', label: 'Day' },
+  { id: 'week', label: 'Week' },
+  { id: 'month', label: 'Month' },
+]
 
 const shared = {
   viewBox: '0 0 24 24',
@@ -107,18 +128,21 @@ function Calendar() {
   const todayIso = toISODate(now)
   const locale = useMemo(() => resolvePlace(now).locale, [now])
 
-  const [visibleMonth, setVisibleMonth] = useState(() => {
-    const mountDate = new Date()
-    return new Date(mountDate.getFullYear(), mountDate.getMonth(), 1)
-  })
-  const [tasks, setTasks] = useState<Task[]>(() => buildInitialTasks(new Date()))
+  const [view, setView] = useState<CalendarView>('month')
+  // Any day inside the visible range; each view derives its own span from it.
+  const [anchor, setAnchor] = useState(() => new Date())
+  const { tasks, addTask, updateTask, deleteTask } = useTasks()
   const [addingTask, setAddingTask] = useState(false)
 
-  const weeks = useMemo(() => getMonthGrid(visibleMonth), [visibleMonth])
+  const weeks = useMemo(() => getMonthGrid(anchor), [anchor])
+  const days = useMemo(
+    () => (view === 'week' ? getWeekDays(anchor) : getDay(anchor)),
+    [view, anchor],
+  )
 
   const tasksByDay = useMemo(() => {
     const map = new Map<string, Task[]>()
-    for (const task of tasks) {
+    for (const task of sortTasks(tasks)) {
       const list = map.get(task.date)
       if (list) list.push(task)
       else map.set(task.date, [task])
@@ -126,25 +150,37 @@ function Calendar() {
     return map
   }, [tasks])
 
-  const addTask = (input: { title: string; date: string; colorId: string }) => {
-    setTasks((current) => [
-      ...current,
-      {
-        id: `task-${Date.now()}`,
-        title: input.title,
-        date: input.date,
-        color: taskColorValue(input.colorId),
-        comments: 0,
-        attachments: 0,
-        assignees: [TEAM[0]],
-      },
-    ])
+  const handleAdd = (values: TaskFormValues) => {
+    addTask(values)
     setAddingTask(false)
   }
 
-  const deleteTask = (id: string) => {
-    setTasks((current) => current.filter((task) => task.id !== id))
+  // Paging moves by whatever unit is on screen.
+  const step = (delta: number) => {
+    setAnchor((current) => {
+      if (view === 'month') return addMonths(current, delta)
+      return addDays(current, view === 'week' ? delta * 7 : delta)
+    })
   }
+
+  const rangeLabel =
+    view === 'month'
+      ? formatMonthYear(anchor, locale)
+      : view === 'week'
+        ? formatWeekRange(days[0].date, days[6].date, locale)
+        : formatDayLabel(anchor, locale)
+
+  // A new task lands on today when today is in view, and on the start of the
+  // visible range otherwise — never on a day the user cannot see.
+  const rangeStart =
+    view === 'month'
+      ? weeks[0][0].date
+      : view === 'week'
+        ? startOfWeek(anchor)
+        : anchor
+  const rangeEnd = view === 'month' ? weeks[5][6].date : days[days.length - 1].date
+  const todayInRange = todayIso >= toISODate(rangeStart) && todayIso <= toISODate(rangeEnd)
+  const defaultTaskDate = todayInRange ? todayIso : toISODate(rangeStart)
 
   return (
     <div className="calendar-page">
@@ -173,81 +209,85 @@ function Calendar() {
           </button>
           {addingTask && (
             <AddTaskPopover
-              defaultDate={todayIso}
-              onAdd={addTask}
+              defaultDate={defaultTaskDate}
+              onAdd={handleAdd}
               onClose={() => setAddingTask(false)}
             />
           )}
         </div>
 
         <div className="calendar-nav">
-          <button
-            type="button"
-            className="calendar-today-btn"
-            onClick={() => {
-              const current = new Date()
-              setVisibleMonth(new Date(current.getFullYear(), current.getMonth(), 1))
-            }}
-          >
-            Today
-          </button>
-          <button
-            type="button"
-            className="calendar-nav-arrow"
-            onClick={() => setVisibleMonth((month) => addMonths(month, -1))}
-            aria-label="Previous month"
-          >
-            <ChevronLeftIcon />
-          </button>
-          <span className="calendar-month-label">{formatMonthYear(visibleMonth, locale)}</span>
-          <button
-            type="button"
-            className="calendar-nav-arrow"
-            onClick={() => setVisibleMonth((month) => addMonths(month, 1))}
-            aria-label="Next month"
-          >
-            <ChevronRightIcon />
-          </button>
-        </div>
-      </div>
-
-      <div className="calendar-grid-wrap">
-        <div className="calendar-grid-inner">
-          <div className="calendar-weekdays">
-            {WEEKDAYS.map((day) => (
-              <div key={day} className="calendar-weekday">
-                {day}
-              </div>
+          <div className="calendar-views" role="group" aria-label="Calendar view">
+            {VIEWS.map((option) => (
+              <button
+                key={option.id}
+                type="button"
+                className={
+                  option.id === view
+                    ? 'calendar-view-btn calendar-view-btn-active'
+                    : 'calendar-view-btn'
+                }
+                aria-pressed={option.id === view}
+                onClick={() => setView(option.id)}
+              >
+                {option.label}
+              </button>
             ))}
           </div>
 
-          <div className="calendar-grid">
-            {weeks.map((week) => (
-              <div className="calendar-week" key={week[0].iso}>
-                {week.map((cell) => (
-                  <div
-                    key={cell.iso}
-                    className={[
-                      'calendar-cell',
-                      cell.inCurrentMonth ? '' : 'calendar-cell-outside',
-                      cell.iso === todayIso ? 'calendar-cell-today' : '',
-                    ]
-                      .filter(Boolean)
-                      .join(' ')}
-                  >
-                    <span className="calendar-daynum">{cell.date.getDate()}</span>
-                    <div className="calendar-cell-tasks">
-                      {(tasksByDay.get(cell.iso) ?? []).map((task) => (
-                        <TaskCard key={task.id} task={task} onDelete={deleteTask} />
-                      ))}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ))}
+          {/* One pill: step back, jump to today, step forward. */}
+          <div className="calendar-steps">
+            <button
+              type="button"
+              className="calendar-step"
+              onClick={() => step(-1)}
+              aria-label={`Previous ${view}`}
+            >
+              <ChevronLeftIcon />
+            </button>
+            <button
+              type="button"
+              className="calendar-step calendar-step-today"
+              onClick={() => setAnchor(new Date())}
+              disabled={todayInRange}
+              title={todayInRange ? 'Already showing today' : 'Jump to today'}
+            >
+              Today
+            </button>
+            <button
+              type="button"
+              className="calendar-step"
+              onClick={() => step(1)}
+              aria-label={`Next ${view}`}
+            >
+              <ChevronRightIcon />
+            </button>
           </div>
+
+          <span className="calendar-range-label">{rangeLabel}</span>
         </div>
       </div>
+
+      {view === 'month' ? (
+        <MonthGrid
+          weeks={weeks}
+          tasksByDay={tasksByDay}
+          todayIso={todayIso}
+          locale={locale}
+          onUpdate={updateTask}
+          onDelete={deleteTask}
+        />
+      ) : (
+        <TimeGrid
+          days={days}
+          tasksByDay={tasksByDay}
+          todayIso={todayIso}
+          now={now}
+          locale={locale}
+          onUpdate={updateTask}
+          onDelete={deleteTask}
+        />
+      )}
     </div>
   )
 }

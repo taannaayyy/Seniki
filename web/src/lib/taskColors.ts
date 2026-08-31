@@ -16,3 +16,8 @@ export type TaskColorId = (typeof TASK_COLORS)[number]['id']
 export function taskColorValue(id: string): string {
   return TASK_COLORS.find((color) => color.id === id)?.value ?? TASK_COLORS[0].value
 }
+
+/** Inverse of `taskColorValue`, so a stored task can be re-opened in a form. */
+export function taskColorId(value: string): TaskColorId {
+  return TASK_COLORS.find((color) => color.value === value)?.id ?? TASK_COLORS[0].id
+}

@@ -86,136 +86,98 @@
 .calendar-nav {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 8px;
 }
 
-.calendar-today-btn {
+/* ---- Stepper: back / today / forward, as one pill ---- */
+.calendar-steps {
+  display: inline-flex;
+  align-items: center;
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: 999px;
   background: var(--surface);
-  color: var(--text);
-  font: inherit;
-  font-size: 13.5px;
-  font-weight: 500;
-  padding: 7px 12px;
-  cursor: pointer;
-  margin-right: 8px;
+  overflow: hidden;
 }
 
-.calendar-today-btn:hover {
-  background: var(--surface-hover);
-}
-
-.calendar-nav-arrow {
+.calendar-step {
   display: grid;
   place-items: center;
-  width: 28px;
-  height: 28px;
+  height: 30px;
+  min-width: 32px;
+  padding: 0 4px;
   border: 0;
-  border-radius: 7px;
   background: transparent;
   color: var(--text-muted);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 500;
   cursor: pointer;
 }
 
-.calendar-nav-arrow:hover {
+.calendar-step:hover:not(:disabled) {
   background: var(--surface-hover);
   color: var(--text);
 }
 
-.calendar-nav-arrow svg {
-  width: 17px;
-  height: 17px;
+.calendar-step svg {
+  width: 15px;
+  height: 15px;
 }
 
-.calendar-month-label {
-  min-width: 130px;
-  text-align: center;
+.calendar-step-today {
+  padding: 0 12px;
+  color: var(--text);
+  border-left: 1px solid var(--border);
+  border-right: 1px solid var(--border);
+}
+
+/* Already on today: the label stays, the action goes quiet. */
+.calendar-step-today:disabled {
+  color: var(--text-muted);
+  cursor: default;
+}
+
+/* Wide enough for the longest label a view produces ("Wednesday, 24 September
+   2026"), so paging doesn't shift the controls beside it. */
+.calendar-range-label {
+  min-width: 210px;
+  text-align: right;
   font-size: 14px;
   font-weight: 600;
   color: var(--text);
 }
 
-/* ---- Grid ---- */
-/* Scrolls horizontally on narrow viewports instead of being clipped by
-   .main's overflow: hidden, since the grid has a real minimum width. */
-.calendar-grid-wrap {
+/* ---- Day / Week / Month switcher ---- */
+.calendar-views {
+  display: inline-flex;
+  gap: 2px;
   border: 1px solid var(--border);
-  border-radius: 12px;
-  overflow-x: auto;
-}
-
-.calendar-grid-inner {
-  min-width: 700px;
-}
-
-.calendar-weekdays,
-.calendar-week {
-  display: grid;
-  grid-template-columns: repeat(7, minmax(0, 1fr));
-}
-
-.calendar-weekdays {
-  border-bottom: 1px solid var(--border);
-  background: var(--surface);
-}
-
-.calendar-weekday {
-  padding: 9px 12px;
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--text-muted);
-}
-
-.calendar-week + .calendar-week {
-  border-top: 1px solid var(--border);
-}
-
-.calendar-cell {
-  position: relative;
-  min-height: 118px;
-  padding: 8px;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  background: var(--bg-sidebar);
-}
-
-.calendar-cell + .calendar-cell {
-  border-left: 1px solid var(--border);
-}
-
-.calendar-cell-outside {
-  background: var(--bg);
-}
-
-.calendar-cell-outside .calendar-daynum {
-  color: var(--text-muted);
-  opacity: 0.5;
-}
-
-.calendar-daynum {
-  display: inline-grid;
-  place-items: center;
-  width: 22px;
-  height: 22px;
   border-radius: 999px;
-  font-size: 12.5px;
-  font-weight: 600;
-  color: var(--text);
-  flex: none;
+  background: var(--surface);
+  padding: 2px;
 }
 
-.calendar-cell-today .calendar-daynum {
+.calendar-view-btn {
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text-muted);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 5px 11px;
+  cursor: pointer;
+}
+
+.calendar-view-btn:hover {
+  background: var(--surface-hover);
+  color: var(--text);
+}
+
+.calendar-view-btn-active,
+.calendar-view-btn-active:hover {
   background: var(--accent);
   color: var(--on-accent);
-}
-
-.calendar-cell-tasks {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  min-width: 0;
 }
 
 @media (max-width: 640px) {
@@ -225,5 +187,10 @@
 
   .calendar-toolbar {
     flex-wrap: wrap;
+  }
+
+  .calendar-range-label {
+    min-width: 0;
+    flex: 1;
   }
 }

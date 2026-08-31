@@ -114,3 +114,48 @@ export function isoWeek(date: Date): number {
   const days = (target.getTime() - yearStart.getTime()) / 86_400_000
   return Math.floor(days / 7) + 1
 }
+
+/** Short weekday name for a column header, e.g. "Mon". */
+export function formatWeekdayShort(date: Date, locale: string): string {
+  return formatter(locale, 'weekdayShort', { weekday: 'short' }).format(date)
+}
+
+/** Title for the day view, e.g. "Monday, 6 October 2026". */
+export function formatDayLabel(date: Date, locale: string): string {
+  return formatter(locale, 'dayLabel', {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  }).format(date)
+}
+
+/**
+ * Title for the week view. `formatRange` collapses the shared parts on its
+ * own ("6 – 12 Oct 2026", but "29 Sep – 5 Oct 2026" across a month boundary).
+ */
+export function formatWeekRange(start: Date, end: Date, locale: string): string {
+  return formatter(locale, 'weekRange', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+  }).formatRange(start, end)
+}
+
+/**
+ * Row label in the day and week views. Follows the 24-hour clock used by
+ * `formatTime`, rather than the locale's own 12/24 preference.
+ */
+export function formatHour(hour: number, locale: string): string {
+  const date = new Date(2000, 0, 1, hour)
+  return formatter(locale, 'hour', {
+    hour: '2-digit',
+    minute: '2-digit',
+    hourCycle: 'h23',
+  }).format(date)
+}
+
+/** Abbreviated month name, shown on the first day of a month in the grid. */
+export function formatMonthShort(date: Date, locale: string): string {
+  return formatter(locale, 'monthShort', { month: 'short' }).format(date)
+}

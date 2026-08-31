@@ -1,0 +1,74 @@
+/* The kebab stays out of the way until the task is hovered or focused — the
+   grids are dense, and the control is noise until it's wanted. */
+.task-actions-btn {
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  flex: none;
+  border: 0;
+  border-radius: 5px;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 0;
+  opacity: 0;
+  transition: opacity 90ms ease;
+}
+
+.task-actions-btn svg {
+  width: 14px;
+  height: 14px;
+}
+
+.task-actions-btn:hover {
+  color: var(--text);
+}
+
+/* Kept visible while its menu is open, and for keyboard users. */
+.task-actions-btn-open,
+.task-actions-btn:focus-visible,
+:hover > .task-actions-btn,
+:hover > * > .task-actions-btn {
+  opacity: 1;
+}
+
+/* Positioned from script (fixed, in a portal on <body>) so the scrolling
+   calendar grids cannot clip it. Sits under the edit dialog's overlay. */
+.task-menu {
+  z-index: 50;
+  min-width: 118px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+  padding: 4px;
+}
+
+.task-menu-item {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 6px 8px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.task-menu-item:hover {
+  background: var(--surface-hover);
+}
+
+.task-menu-item-danger {
+  color: #c94242;
+}
+
+@media (hover: none) {
+  .task-actions-btn {
+    opacity: 1;
+  }
+}

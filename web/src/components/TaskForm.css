@@ -1,0 +1,102 @@
+.task-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.task-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+  min-width: 0;
+}
+
+.task-field input {
+  font: inherit;
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--text);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 7px 9px;
+  min-width: 0;
+}
+
+.task-field input:focus {
+  outline: none;
+  border-color: var(--border-strong);
+}
+
+/* Date and time read as one setting, so they share a row. */
+.task-field-row {
+  display: flex;
+  gap: 10px;
+}
+
+.task-field-row .task-field {
+  flex: 1;
+}
+
+.task-swatches {
+  display: flex;
+  gap: 8px;
+}
+
+.task-swatch {
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  border: 2px solid transparent;
+  cursor: pointer;
+  padding: 0;
+}
+
+.task-swatch-active {
+  border-color: var(--text);
+}
+
+.task-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 2px;
+}
+
+.task-form-cancel,
+.task-form-submit {
+  font: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  border-radius: 8px;
+  padding: 6px 12px;
+  cursor: pointer;
+}
+
+.task-form-cancel {
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text);
+}
+
+.task-form-cancel:hover {
+  background: var(--surface-hover);
+}
+
+.task-form-submit {
+  border: 0;
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+.task-form-submit:hover:not(:disabled) {
+  background: var(--accent-hover);
+}
+
+.task-form-submit:disabled {
+  opacity: 0.4;
+  cursor: default;
+}

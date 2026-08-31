@@ -1,0 +1,92 @@
+/* Month view. Scrolls horizontally on narrow viewports instead of being
+   clipped by .main's overflow: hidden, since the grid has a real minimum
+   width. */
+.month-wrap {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow-x: auto;
+}
+
+.month-inner {
+  min-width: 720px;
+}
+
+/* A narrow leading column carries the ISO week number. */
+.month-head,
+.month-week {
+  display: grid;
+  grid-template-columns: 34px repeat(7, minmax(0, 1fr));
+}
+
+.month-head {
+  border-bottom: 1px solid var(--border);
+}
+
+.month-weekday {
+  padding: 8px 10px;
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+.month-week + .month-week {
+  border-top: 1px solid var(--border);
+}
+
+.month-week-num {
+  display: flex;
+  justify-content: center;
+  padding-top: 7px;
+  font-size: 10.5px;
+  color: var(--text-muted);
+  opacity: 0.65;
+  font-variant-numeric: tabular-nums;
+}
+
+.month-cell {
+  min-height: 104px;
+  padding: 5px 4px 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  border-left: 1px solid var(--border);
+  min-width: 0;
+}
+
+.month-cell-outside {
+  background: color-mix(in srgb, var(--text-muted) 4%, transparent);
+}
+
+.month-cell-outside .month-daynum {
+  opacity: 0.45;
+}
+
+.month-daynum-row {
+  display: flex;
+  justify-content: flex-end;
+  padding: 0 3px 1px;
+}
+
+.month-daynum {
+  display: inline-grid;
+  place-items: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: 999px;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.month-daynum-today {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+.month-cell-tasks {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
