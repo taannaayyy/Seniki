@@ -1,7 +1,7 @@
-"""Seniki backend: exposes the user's iCloud calendar over a small JSON API.
+"""HTTP routes: the user's iCloud calendar as a small JSON API.
 
-Run directly (`python main.py`) — this is what app/scripts/start.ps1 and
-start.sh already invoke.
+Kept free of CalDAV specifics — every call goes through `icloud`, which deals
+in plain dicts. Served by `python -m seniki` (see __main__.py).
 """
 
 from __future__ import annotations
@@ -12,9 +12,10 @@ from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 
-import icloud
+from . import icloud
 
-load_dotenv(Path(__file__).resolve().parent / ".env")
+# .env sits beside the package, at app/.env.
+load_dotenv(Path(__file__).resolve().parents[1] / ".env")
 
 app = FastAPI(title="Seniki")
 
@@ -61,9 +62,3 @@ def delete_task(task_id: str) -> None:
         icloud.delete_task(task_id)
     except icloud.ICloudError as exc:
         raise _as_http_error(exc) from exc
-
-
-if __name__ == "__main__":
-    import uvicorn
-
-    uvicorn.run(app, host="127.0.0.1", port=8000)

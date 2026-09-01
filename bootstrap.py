@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
-"""Initial project setup: creates the backend virtualenv and installs
-Python + frontend dependencies.
+"""First-run project setup: creates the backend virtualenv, installs the
+Python + frontend dependencies, and puts launcher icons on the Desktop.
+
+Deliberately not named setup.py: that name means "build/install this package"
+to Python tooling, and `pip install .` would try to run it as one.
 
 Usage:
-    python setup.py
+    python bootstrap.py
 """
 
 from __future__ import annotations

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Starts the Seniki backend + frontend in the background and opens the app
 # in the default browser. Designed to be launched from the desktop shortcut
-# created by setup.py (macOS/Linux counterpart of start.ps1).
+# created by bootstrap.py (macOS/Linux counterpart of start.ps1).
 
 set -u
 
@@ -87,7 +87,7 @@ backend_pid_file="$run_dir/backend.pid"
 frontend_pid_file="$run_dir/frontend.pid"
 
 if ! ensure_npm_on_path; then
-    alert "Node.js (npm) was not found. Install Node.js, then run setup.py again."
+    alert "Node.js (npm) was not found. Install Node.js, then run bootstrap.py again."
     exit 1
 fi
 log "Using npm at $(command -v npm)."
@@ -105,11 +105,11 @@ if [ -x "$venv_python" ]; then
         log "Backend already running."
     else
         log "Starting backend."
-        (cd "$app_dir" && "$venv_python" main.py >"$run_dir/backend.log" 2>"$run_dir/backend.err.log") &
+        (cd "$app_dir" && "$venv_python" -m seniki >"$run_dir/backend.log" 2>"$run_dir/backend.err.log") &
         echo $! > "$backend_pid_file"
     fi
 else
-    log "Skipping backend: $venv_python not found. Run setup.py first."
+    log "Skipping backend: $venv_python not found. Run bootstrap.py first."
 fi
 
 log "Waiting for dev server to come up."

@@ -2,7 +2,7 @@
 
 Translates between iCloud's CalDAV/iCalendar events and the plain
 {id, title, date, time, endTime, colorId} shape the frontend uses. This is
-the only module that imports `caldav`/`icalendar` — callers in main.py just
+the only module that imports `caldav`/`icalendar` — callers in `api` just
 deal with dicts.
 """
 

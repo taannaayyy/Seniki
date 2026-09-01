@@ -39,6 +39,25 @@ export function TodoIcon({ className }: IconProps) {
   )
 }
 
+export function JournalIcon({ className }: IconProps) {
+  return (
+    <svg className={className} {...shared}>
+      <rect x="4.5" y="3.5" width="15" height="17" rx="2.2" />
+      <path d="M8.6 3.5v17" />
+      <path d="M11.8 8.6h4.2M11.8 12.4h4.2" />
+    </svg>
+  )
+}
+
+export function LearningIcon({ className }: IconProps) {
+  return (
+    <svg className={className} {...shared}>
+      <path d="M12 4.2 21.4 8.5 12 12.8 2.6 8.5z" />
+      <path d="M6.8 10.6v4.3c0 1.6 2.3 2.9 5.2 2.9s5.2-1.3 5.2-2.9v-4.3" />
+    </svg>
+  )
+}
+
 export function FinanceIcon({ className }: IconProps) {
   return (
     <svg className={className} {...shared}>

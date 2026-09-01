@@ -32,20 +32,20 @@ Needs Node 20+, Python 3.11+, and an
 [app-specific password](https://appleid.apple.com) for your Apple ID.
 
 ```sh
-python3 setup.py                # venv, deps, Desktop shortcuts — no sudo
+python3 bootstrap.py            # venv, deps, Desktop shortcuts — no sudo
 cp app/.env.example app/.env    # add your Apple ID + app password
 ```
 
 Then double-click **Seniki** on the Desktop, or run it by hand:
 
 ```sh
-app/.venv/bin/python app/main.py   # API   :8000
-cd web && npm run dev              # UI    :5173
+cd app && .venv/bin/python -m seniki   # API  :8000
+cd web && npm run dev                  # UI   :5173
 ```
 
 ## How it works
 
-React + Vite talk to a FastAPI backend, which talks to iCloud. `app/icloud.py`
+React + Vite talk to a FastAPI backend, which talks to iCloud. `app/seniki/icloud.py`
 is the only file that knows about CalDAV — it turns calendar events into flat
 JSON, and back. `useTasks` is the only thing the UI knows about storage, so
 swapping what's behind it is a one-file change.

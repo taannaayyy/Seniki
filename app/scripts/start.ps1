@@ -1,6 +1,6 @@
 # Starts the Seniki backend + frontend in the background and opens the app
 # in the default browser. Designed to be launched hidden (no console window)
-# from the desktop shortcut created by setup.py.
+# from the desktop shortcut created by bootstrap.py.
 
 $ErrorActionPreference = "Stop"
 
@@ -46,14 +46,14 @@ try {
             Log "Backend already running."
         } else {
             Log "Starting backend."
-            $backend = Start-Process -FilePath $venvPython -ArgumentList "main.py" `
+            $backend = Start-Process -FilePath $venvPython -ArgumentList "-m", "seniki" `
                 -WorkingDirectory $appDir -WindowStyle Hidden -PassThru `
                 -RedirectStandardOutput (Join-Path $runDir "backend.log") `
                 -RedirectStandardError (Join-Path $runDir "backend.err.log")
             $backend.Id | Set-Content $backendPidFile
         }
     } else {
-        Log "Skipping backend: $venvPython not found. Run setup.py first."
+        Log "Skipping backend: $venvPython not found. Run bootstrap.py first."
     }
 
     Log "Waiting for dev server to come up."
