@@ -131,7 +131,7 @@ function Calendar() {
   const [view, setView] = useState<CalendarView>('month')
   // Any day inside the visible range; each view derives its own span from it.
   const [anchor, setAnchor] = useState(() => new Date())
-  const { tasks, addTask, updateTask, deleteTask } = useTasks()
+  const { tasks, error, addTask, updateTask, deleteTask } = useTasks()
   const [addingTask, setAddingTask] = useState(false)
 
   const weeks = useMemo(() => getMonthGrid(anchor), [anchor])
@@ -267,6 +267,8 @@ function Calendar() {
           <span className="calendar-range-label">{rangeLabel}</span>
         </div>
       </div>
+
+      {error && <p className="calendar-error">Couldn't reach iCloud — {error}</p>}
 
       {view === 'month' ? (
         <MonthGrid

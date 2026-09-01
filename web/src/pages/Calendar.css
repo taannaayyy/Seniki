@@ -5,6 +5,16 @@
   padding: 0 28px 24px;
 }
 
+.calendar-error {
+  margin: 0 0 12px;
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
 /* ---- View tabs ---- */
 .calendar-tabs {
   display: flex;

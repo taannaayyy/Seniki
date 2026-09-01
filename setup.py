@@ -82,12 +82,20 @@ def desktop_dir() -> Path:
     return Path.home() / "Desktop"
 
 
-def create_windows_shortcut(desktop: Path) -> None:
-    """Create a .lnk that runs start.ps1 without a console window."""
-    shortcut = desktop / f"{APP_NAME}.lnk"
-    target = SCRIPTS_DIR / "start.ps1"
+def create_windows_shortcut(desktop: Path, name: str, vbs_name: str, description: str) -> None:
+    """Create a .lnk that runs the named vbs script without a console window.
+
+    Points at start_hidden.vbs/stop_hidden.vbs (which run powershell via
+    WScript.Shell.Run(..., 0, False)) rather than invoking
+    `powershell -WindowStyle Hidden` directly from the shortcut: that flag
+    can still flash a window briefly, or get overridden, depending on how
+    it's launched. The VBScript indirection is the standard, reliable way
+    to get a truly invisible launch on Windows.
+    """
+    shortcut = desktop / f"{name}.lnk"
+    target = SCRIPTS_DIR / vbs_name
     if not target.exists():
-        print(f"{target} not found, skipping desktop shortcut.")
+        print(f"{target} not found, skipping {name} shortcut.")
         return
 
     icon = ROOT / "assets" / "icon.ico"
@@ -95,10 +103,10 @@ def create_windows_shortcut(desktop: Path) -> None:
     script = f"""
 $w = New-Object -ComObject WScript.Shell
 $s = $w.CreateShortcut("{shortcut}")
-$s.TargetPath = "powershell.exe"
-$s.Arguments = '-NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -File "{target}"'
+$s.TargetPath = "wscript.exe"
+$s.Arguments = '"{target}"'
 $s.WorkingDirectory = "{ROOT}"
-$s.Description = "Start {APP_NAME}"
+$s.Description = "{description}"
 {icon_line}
 $s.Save()
 """
@@ -109,32 +117,32 @@ $s.Save()
     print(f"Created desktop shortcut: {shortcut}")
 
 
-def create_macos_shortcut(desktop: Path) -> None:
-    """Create a minimal .app bundle on the Desktop that runs start.sh."""
-    target = SCRIPTS_DIR / "start.sh"
+def create_macos_shortcut(desktop: Path, name: str, sh_name: str) -> None:
+    """Create a minimal .app bundle on the Desktop that runs the named script."""
+    target = SCRIPTS_DIR / sh_name
     if not target.exists():
-        print(f"{target} not found, skipping desktop shortcut.")
+        print(f"{target} not found, skipping {name} shortcut.")
         return
 
-    bundle = desktop / f"{APP_NAME}.app"
+    bundle = desktop / f"{name}.app"
     macos_dir = bundle / "Contents" / "MacOS"
     resources_dir = bundle / "Contents" / "Resources"
     macos_dir.mkdir(parents=True, exist_ok=True)
     resources_dir.mkdir(parents=True, exist_ok=True)
 
-    launcher = macos_dir / APP_NAME
+    launcher = macos_dir / name
     launcher.write_text(f'#!/bin/sh\nexec "{target}"\n')
     launcher.chmod(launcher.stat().st_mode | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
 
     info = {
-        "CFBundleName": APP_NAME,
-        "CFBundleDisplayName": APP_NAME,
-        "CFBundleIdentifier": f"local.{APP_NAME.lower()}.launcher",
-        "CFBundleExecutable": APP_NAME,
+        "CFBundleName": name,
+        "CFBundleDisplayName": name,
+        "CFBundleIdentifier": f"local.{APP_NAME.lower()}.{name.lower().replace(' ', '-')}",
+        "CFBundleExecutable": name,
         "CFBundlePackageType": "APPL",
         "CFBundleVersion": "1.0",
         "CFBundleShortVersionString": "1.0",
-        # No Dock icon or menu bar: this bundle only kicks off start.sh.
+        # No Dock icon or menu bar: this bundle only kicks off the script.
         "LSUIElement": True,
     }
 
@@ -152,17 +160,21 @@ def create_macos_shortcut(desktop: Path) -> None:
 
 
 def setup_shortcut() -> None:
-    print("\n== Desktop shortcut ==")
+    print("\n== Desktop shortcuts ==")
     desktop = desktop_dir()
     if not desktop.is_dir():
-        print(f"{desktop} not found, skipping desktop shortcut.")
+        print(f"{desktop} not found, skipping desktop shortcuts.")
         return
 
     try:
         if sys.platform == "win32":
-            create_windows_shortcut(desktop)
+            create_windows_shortcut(desktop, APP_NAME, "start_hidden.vbs", f"Start {APP_NAME}")
+            create_windows_shortcut(
+                desktop, f"Stop {APP_NAME}", "stop_hidden.vbs", f"Stop {APP_NAME}"
+            )
         elif sys.platform == "darwin":
-            create_macos_shortcut(desktop)
+            create_macos_shortcut(desktop, APP_NAME, "start.sh")
+            create_macos_shortcut(desktop, f"Stop {APP_NAME}", "stop.sh")
         else:
             print(f"No desktop shortcut support for platform {sys.platform!r}, skipping.")
     except (OSError, subprocess.CalledProcessError) as exc:
@@ -182,7 +194,7 @@ def main() -> None:
     print(f"Activate the backend venv with:\n  {activate}")
     print("Start the frontend dev server with:\n  cd web && npm run dev")
     if sys.platform in ("win32", "darwin"):
-        print(f"Or launch everything from the {APP_NAME} icon on your Desktop.")
+        print(f"Or use the {APP_NAME} / Stop {APP_NAME} icons on your Desktop.")
 
 
 if __name__ == "__main__":
